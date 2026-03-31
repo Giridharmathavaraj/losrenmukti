@@ -24,7 +24,8 @@ export const getApiUrl = (endpoint) => {
 
     // 3. Production/Network: Use a simple relative path. 
     // Our 'rewrites' in catalyst.json will route /api/** to the backend function.
-    return `/api${cleanEndpoint}`;
+    const finalPath = cleanEndpoint.startsWith('/api') ? cleanEndpoint : `/api${cleanEndpoint}`;
+    return finalPath;
   }
 
   // 4. Fallback for SSR/Server-side
