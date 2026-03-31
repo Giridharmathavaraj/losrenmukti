@@ -1,0 +1,300 @@
+/* Main Container */
+.user-page-container {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #f8f9fa;
+    /* Light gray background */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.page-header {
+    background-color: #fff;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.header-title-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-secondary {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    border-radius: 4px;
+    color: #333;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    padding: 4px;
+}
+
+.close-btn {
+    font-size: 20px;
+    margin-left: 12px;
+    color: #999;
+    cursor: pointer;
+}
+
+/* Tabs */
+.tabs-nav {
+    background-color: #fff;
+    padding: 0 24px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    gap: 24px;
+}
+
+.tab-link {
+    padding: 12px 0;
+    color: #666;
+    font-size: 14px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+}
+
+.tab-link.active {
+    color: #007bff;
+    border-bottom-color: #007bff;
+    font-weight: 500;
+}
+
+/* Content Grid */
+.content-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    /* Left fixed width, Right flexible */
+    gap: 24px;
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Left Column - Profile Card */
+.profile-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.profile-header {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.avatar-large {
+    width: 64px;
+    height: 64px;
+    background-color: #ddd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 24px;
+}
+
+.profile-info h2 {
+    font-size: 18px;
+    margin: 0 0 4px 0;
+    color: #333;
+}
+
+.profile-info .email {
+    color: #007bff;
+    font-size: 13px;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.profile-info .department {
+    color: #666;
+    font-size: 13px;
+}
+
+.contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+    color: #333;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-link {
+    color: #007bff;
+    font-size: 13px;
+    margin-top: 12px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* Address Section */
+.info-section {
+    background: white;
+    /* Or transparent if just text */
+    margin-bottom: 24px;
+}
+
+.section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #666;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.address-box {
+    background: #f8f9fa;
+    /* Light gray box for address usually */
+    padding: 0;
+    /* Or padding if it's a box */
+}
+
+.address-title {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.address-text {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Right Column - Widgets */
+.dashboard-widget {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.widget-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.whats-next-content {
+    color: #555;
+    font-size: 13px;
+}
+
+.action-buttons-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.due-period {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.due-period-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Receivables Table */
+.receivables-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.receivables-table th {
+    text-align: left;
+    color: #888;
+    font-weight: 500;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.receivables-table td {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    color: #333;
+}
+
+.total-row td {
+    font-weight: 600;
+    border-bottom: none;
+    padding-top: 16px;
+}
+
+.amount {
+    text-align: right;
+}
+
+.link-action {
+    color: #007bff;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 16px;
+    display: inline-block;
+}
+
+/* Helper */
+.text-muted {
+    color: #888;
+}

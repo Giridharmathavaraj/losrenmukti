@@ -1,0 +1,210 @@
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Main Container */
+.modal-container {
+    background: white;
+    width: 90%;
+    max-width: 1000px;
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+}
+
+.close-icon {
+    cursor: pointer;
+    color: #888;
+}
+
+/* Green Background Body */
+.modal-body-gradient {
+    /* background: linear-gradient(135deg, #FFC300, #FFD400); */
+    /* background: linear-gradient(135deg, #2A7B9B, #57C785); */
+    background: #020024;
+background: linear-gradient(335deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
+    padding: 60px 40px;
+    max-height: 70vh;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+}
+
+/* The White Paper Card */
+.application-card {
+    background: white;
+    width: 100%;
+    overflow-y: auto;
+    max-width: 700px;
+    padding: 50px 60px;
+    border-radius: 4px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.form-main-title {
+    color: #090808;
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-size: 24px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+/* Inputs */
+.form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    
+    text-align: left;
+}
+
+.input-group label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 6px;
+}
+
+.section-divider {
+    font-size: 13px;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+    margin: 25px 0 15px 0;
+}
+
+.input-group input, 
+.input-group select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+}
+
+.input-group input:focus {
+    border-color:rgba(9, 9, 121, 1);
+}
+
+/* Footer */
+.modal-footer {
+    padding: 10px 20px;
+    border-top: 1px solid #eee;
+    text-align: right;
+}
+
+.close-btn-text {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #555;
+}
+
+.close-btn-text:hover {
+    background: #f9f9f9;
+}
+
+.input-group.file-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+/* Label styling to match the screenshot */
+.input-group.file-group label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* The actual file input box */
+.input-group.file-group input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+}
+
+/* Styling the "Choose File" button inside the input */
+/* This works for Chrome, Edge, and Safari */
+.input-group.file-group input[type="file"]::-webkit-file-upload-button {
+    background: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    padding: 4px 12px;
+    margin-right: 10px;
+    color: #333;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.input-group.file-group input[type="file"]::-webkit-file-upload-button:hover {
+    background: #e2e2e2;
+}
+
+/* Firefox specific styling */
+.input-group.file-group input[type="file"]::file-selector-button {
+    background: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    padding: 4px 12px;
+    margin-right: 10px;
+    color: #333;
+    font-weight: 600;
+    cursor: pointer;
+}
+.btns{
+    width: 200px;
+    height: 40px;
+    margin: auto;
+    border-radius: 20px;
+    border: none;
+    background-color: #060554;
+    color: white;
+    cursor: pointer;
+}
