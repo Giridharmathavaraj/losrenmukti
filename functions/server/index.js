@@ -99,16 +99,33 @@ app.get('/api/health', (req, res) => {
 const DEFAULT_ATLAS_URI = 'mongodb+srv://giridharmathavaraj_db_user:JlqWzElUK6bDDVUt@cluster0.kjqzoqe.mongodb.net/loanpro_db?retryWrites=true&w=majority';
 const MONGODB_URI = process.env.MONGODB_URI || DEFAULT_ATLAS_URI;
 
+let isDbConnected = false;
+
 mongoose.connect(MONGODB_URI)
   .then(() => {
+    isDbConnected = true;
     const isAtlas = MONGODB_URI.includes('mongodb+srv');
     const dbName = mongoose.connection.name;
     console.log(`✅ MongoDB Connected to ${isAtlas ? 'Atlas' : 'Local'} (${dbName})`);
   })
   .catch(err => {
+    isDbConnected = false;
     console.error('❌ MongoDB Connection Error:', err.message);
-    process.exit(1); // Exit if DB connection fails
+    // DO NOT call process.exit(1) in a Catalyst Function as it crashes the service
   });
+
+// --- MongoDB Connection Guard ---
+app.use((req, res, next) => {
+  // Allow health checks even if DB is down
+  if (req.path === '/api/health') return next();
+
+  if (!isDbConnected && req.path.startsWith('/api')) {
+    return res.status(503).json({ 
+      error: 'Database connection not ready. Check your MongoDB Atlas IP Whitelist (Allow Access from Anywhere 0.0.0.0/0 recommended for initial Catalyst testing).' 
+    });
+  }
+  next();
+});
 
 // --- Authentication Middleware ---
 const authenticateToken = (req, res, next) => {
