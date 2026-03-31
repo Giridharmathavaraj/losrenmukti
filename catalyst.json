@@ -8,13 +8,7 @@
   "slate": [
     {
       "source": ".",
-      "output": "out",
-      "rewrites": [
-        {
-          "source": "/api/**",
-          "target": "/server/server/api/**"
-        }
-      ]
+      "output": "out"
     }
   ]
 }
