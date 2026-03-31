@@ -22,9 +22,9 @@ export const getApiUrl = (endpoint) => {
       return `http://${hostname}:5000${cleanEndpoint}`;
     }
 
-    // 3. Production/Network: Use the same origin + Catalyst Function path
-    // On Zoho Catalyst, functions are mapped to /server/<function_name>/
-    return `${protocol}//${hostname}/server/server${cleanEndpoint}`;
+    // 3. Production/Network: Use a simple relative path. 
+    // Our 'rewrites' in catalyst.json will route /api/** to the backend function.
+    return `/api${cleanEndpoint}`;
   }
 
   // 4. Fallback for SSR/Server-side
