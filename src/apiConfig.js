@@ -6,12 +6,27 @@ export const getApiUrl = (endpoint) => {
     return `${process.env.NEXT_PUBLIC_API_URL}${cleanEndpoint}`;
   }
 
-  // 2. In browser, dynamically use the current IP/Hostname (perfect for local network testing)
+  // 2. Browser logic
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
-    return `http://${hostname}:5000${cleanEndpoint}`;
+    const protocol = window.location.protocol;
+
+    // Use port 5000 ONLY on localhost or local network IPs (e.g., 192.168.x.x)
+    const isLocal = hostname === 'localhost' || 
+                    hostname === '127.0.0.1' || 
+                    /^192\.168\./.test(hostname) || 
+                    /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(hostname) || 
+                    /^10\./.test(hostname);
+
+    if (isLocal) {
+      return `http://${hostname}:5000${cleanEndpoint}`;
+    }
+
+    // 3. Production/Network: Use the same origin (no port 5000)
+    // This assumes your backend is proxied/hosted on the same domain in production
+    return `${protocol}//${hostname}${cleanEndpoint}`;
   }
 
-  // 3. Fallback for SSR/Server-side
+  // 4. Fallback for SSR/Server-side
   return `http://localhost:5000${cleanEndpoint}`;
 };
