@@ -3,6 +3,7 @@ import express from 'express';
 import nodemailer from 'nodemailer';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import catalyst from 'zcatalyst-sdk-node';
 import fs from 'fs';
 import multer from 'multer';
 import bcrypt from 'bcryptjs';
@@ -57,6 +58,21 @@ const uploadFields = upload.fields([
 ]);
 
 const app = express();
+
+// --- Catalyst Connection (Tutorial Method) ---
+app.use((req, res, next) => {
+  try {
+    // Initialize Catalyst SDK for the current request context
+    req.catalyst = catalyst.initialize(req);
+    next();
+  } catch (error) {
+    // Gracefully handle local development where SDK might not be initialized
+    if (process.env.NODE_ENV !== 'production') {
+      // console.log("Local Dev: Catalyst SDK not initialized");
+    }
+    next();
+  }
+});
 app.use(express.json());
 app.use(cors());
 
