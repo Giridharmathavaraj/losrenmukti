@@ -1,0 +1,12 @@
+{
+  "functions": {
+    "source": "functions",
+    "targets": [
+      "server"
+    ]
+  },
+  "slate": {
+    "source": ".",
+    "output": "out"
+  }
+}
