@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { getApiUrl } from '../apiConfig';
 import { useLocation, useNavigate } from '@/Component/router-hooks';
@@ -195,11 +197,11 @@ function EditUserPage() {
                     <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="Primary_Address_State">State</label>
-                            <select 
-                                id="Primary_Address_State" 
-                                name="Primary_Address_State" 
-                                className="form-control" 
-                                value={showOtherState ? "Others" : formData.Primary_Address_State} 
+                            <select
+                                id="Primary_Address_State"
+                                name="Primary_Address_State"
+                                className="form-control"
+                                value={showOtherState ? "Others" : formData.Primary_Address_State}
                                 onChange={handleStateChange}
                             >
                                 <option value="">Select State</option>

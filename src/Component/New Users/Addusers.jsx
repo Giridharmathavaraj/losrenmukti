@@ -1,4 +1,5 @@
-// RecordForm.jsx
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { getApiUrl } from '../../apiConfig';
 import { useNavigate } from '@/Component/router-hooks';

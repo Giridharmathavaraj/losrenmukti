@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react'
 import {
   ChevronDown, Bell, Mail, HelpCircle, User,
@@ -74,8 +76,8 @@ function Nav() {
               </a>
               {isSettingsOpen && (
                 <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: '8px', background: 'white', border: '1px solid #eee', borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100, minWidth: '150px', padding: '8px 0' }}>
-                  <button 
-                    onClick={() => { setIsSettingsOpen(false); navigate('/settings/states'); }} 
+                  <button
+                    onClick={() => { setIsSettingsOpen(false); navigate('/settings/states'); }}
                     style={{ display: 'block', width: '100%', padding: '8px 16px', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', color: '#333' }}
                     onMouseEnter={(e) => e.target.style.background = '#f5f5f5'}
                     onMouseLeave={(e) => e.target.style.background = 'none'}

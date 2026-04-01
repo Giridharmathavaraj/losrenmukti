@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { getApiUrl } from '../apiConfig';
 import { useLocation, useNavigate } from '@/Component/router-hooks';
@@ -215,7 +217,7 @@ const MailsMessagesView = ({ loanData, setLoanData }) => {
 
 const CommentsView = ({ loanData }) => {
   const comments = loanData?.comments || [];
-  
+
   return (
     <div style={{ padding: '24px 0', animation: 'fadeIn 0.3s ease' }}>
       <div className="dashboard-widget" style={{ padding: '24px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
@@ -315,14 +317,14 @@ const OverviewWidgets = ({ loanData }) => {
 
   if (!isDummy) {
     let schedule = loanData?.transactions || [];
-    
+
     // If loanData doesn't have cached transactions, generate a dynamic baseline schedule for calculation
     if (!schedule.length) {
       const firstDateStr = loanData?.firstPaymentDate;
       if (firstDateStr) {
-        let currentDate = new Date(firstDateStr + 'T12:00:00'); 
+        let currentDate = new Date(firstDateStr + 'T12:00:00');
         if (isNaN(currentDate.getTime())) currentDate = new Date(firstDateStr);
-        
+
         for (let i = 1; i <= totalPeriods; i++) {
           const compDate = loanData?.completedPayments?.[i] || null;
           let rowStatus = compDate ? 'Completed' : 'Pending';
@@ -365,13 +367,13 @@ const OverviewWidgets = ({ loanData }) => {
       amountPastDueVal = schedule
         .filter(t => t.Status === 'Pending' && t.date)
         .reduce((sum, t) => {
-           const txDate = new Date(t.date);
-           const diffDays = Math.floor((today - txDate) / (1000 * 60 * 60 * 24));
-           // To be perfectly dynamic with standard past due, we check if it passed
-           if (diffDays >= 30) return sum + (t.payment || basePayment);
-           return sum;
+          const txDate = new Date(t.date);
+          const diffDays = Math.floor((today - txDate) / (1000 * 60 * 60 * 24));
+          // To be perfectly dynamic with standard past due, we check if it passed
+          if (diffDays >= 30) return sum + (t.payment || basePayment);
+          return sum;
         }, 0);
-      
+
       // 3. Date Last Current
       const completedList = schedule.filter(t => t.Status === 'Completed');
       if (completedList.length > 0) {
@@ -381,10 +383,10 @@ const OverviewWidgets = ({ loanData }) => {
         dateLastCurrentStr = 'N/A';
       }
     } else {
-       // if still no schedule generated, fallback to basePayment
-       nextPaymentAmountVal = basePayment;
-       dateLastCurrentStr = 'N/A';
-       amountPastDueVal = 0;
+      // if still no schedule generated, fallback to basePayment
+      nextPaymentAmountVal = basePayment;
+      dateLastCurrentStr = 'N/A';
+      amountPastDueVal = 0;
     }
   }
 
@@ -456,7 +458,7 @@ const OverviewWidgets = ({ loanData }) => {
           <ChevronDown size={14} />
         </div>
         <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '24px', color: '#333' }}>Payoff Breakdown</h3>
- 
+
         <div style={{ marginBottom: '24px', border: '1px solid #e2e8f0', borderRadius: '4px', padding: '8px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <input type="text" placeholder="MM/dd/yy" style={{ border: 'none', outline: 'none', color: '#666', width: '100%', fontSize: '13px' }} />
           <Calendar size={14} color="#666" />
@@ -1289,211 +1291,211 @@ const BankingView = ({
   const existingAccounts = Array.isArray(loanData?.bankingDetails) ? loanData.bankingDetails : loanData?.bankingDetails ? [loanData.bankingDetails] : [];
   const [openMenuId, setOpenMenuId] = React.useState(null);
   const currentAccounts = existingAccounts.filter(acc => acc.accountType === activeTab);
-  
+
   return (
-  <div className="uploads-tab-content">
-    <div className="dashboard-widget">
-      <div className="widget-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: 0 }}>
-        <span style={{ fontSize: '14px', fontWeight: 'bold' }}>{activeTab.toUpperCase()} DETAILS</span>
-        {!isAddingAccount && (
-          <button className="btn-primary" onClick={() => setIsAddingAccount(true)} style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 16px' }}>
-            <Plus size={14} /> Add Account
-          </button>
+    <div className="uploads-tab-content">
+      <div className="dashboard-widget">
+        <div className="widget-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: 0 }}>
+          <span style={{ fontSize: '14px', fontWeight: 'bold' }}>{activeTab.toUpperCase()} DETAILS</span>
+          {!isAddingAccount && (
+            <button className="btn-primary" onClick={() => setIsAddingAccount(true)} style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 16px' }}>
+              <Plus size={14} /> Add Account
+            </button>
+          )}
+        </div>
+
+        {isAddingAccount ? (
+          <div style={{ padding: '20px 0', textAlign: 'left' }}>
+            <p style={{ fontSize: '12px', color: '#666', marginBottom: '20px' }}>
+              Payment information is protected by <strong>Secure Payments™</strong>. Please fill out the below form and click "Submit".
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                  <label style={{ fontSize: '12px', color: '#336699' }}>Account Type</label>
+                  <select
+                    value={activeTab}
+                    onChange={(e) => setActiveTab(e.target.value)}
+                    style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '16px', color: '#666', outline: 'none', backgroundColor: 'transparent' }}
+                  >
+                    <option value="Checking Account">Checking Account</option>
+                    <option value="Saving Account">Saving Account</option>
+                    <option value="Credit Card">Credit Card</option>
+                  </select>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                  <label style={{ fontSize: '12px', color: '#336699' }}>Name on account</label>
+                  <input type="text" value={nameOnAccount} onChange={(e) => setNameOnAccount(e.target.value)} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '14px', outline: 'none' }} />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                  <label style={{ fontSize: '12px', color: '#336699' }}>Account number</label>
+                  <input type="text" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '14px', outline: 'none' }} />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                  <label style={{ fontSize: '12px', color: '#336699' }}>Routing number</label>
+                  <input type="text" value={routingNumber} onChange={handleRoutingNumberChange} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '14px', outline: 'none' }} />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                  <label style={{ fontSize: '12px', color: '#336699' }}>Bank name</label>
+                  <input type="text" value={bankName} onChange={(e) => setBankName(e.target.value)} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '14px', outline: 'none' }} />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                  <label style={{ fontSize: '12px', color: '#336699' }}>Address</label>
+                  <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '14px', outline: 'none' }} />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                  <label style={{ fontSize: '12px', color: '#336699' }}>ZIP Code</label>
+                  <input type="text" value={zipCode} onChange={handleZipChange} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '14px', outline: 'none' }} />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                  <label style={{ fontSize: '12px', color: '#336699' }}>City</label>
+                  <input type="text" value={city} onChange={(e) => setCity(e.target.value)} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '14px', outline: 'none' }} />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                  <label style={{ fontSize: '12px', color: '#336699' }}>State</label>
+                  <select value={stateName} onChange={(e) => setStateName(e.target.value)} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '16px', outline: 'none', backgroundColor: 'transparent' }}>
+                    <option value="Alabama">Alabama</option>
+                    <option value="Alaska">Alaska</option>
+                    <option value="Arizona">Arizona</option>
+                    <option value="Arkansas">Arkansas</option>
+                    <option value="California">California</option>
+                    <option value="Colorado">Colorado</option>
+                    <option value="Connecticut">Connecticut</option>
+                    <option value="Delaware">Delaware</option>
+                    <option value="Florida">Florida</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Hawaii">Hawaii</option>
+                    <option value="Idaho">Idaho</option>
+                    <option value="Illinois">Illinois</option>
+                    <option value="Indiana">Indiana</option>
+                    <option value="Iowa">Iowa</option>
+                    <option value="Kansas">Kansas</option>
+                    <option value="Kentucky">Kentucky</option>
+                    <option value="Louisiana">Louisiana</option>
+                    <option value="Maine">Maine</option>
+                    <option value="Maryland">Maryland</option>
+                    <option value="Massachusetts">Massachusetts</option>
+                    <option value="Michigan">Michigan</option>
+                    <option value="Minnesota">Minnesota</option>
+                    <option value="Mississippi">Mississippi</option>
+                    <option value="Missouri">Missouri</option>
+                    <option value="Montana">Montana</option>
+                    <option value="Nebraska">Nebraska</option>
+                    <option value="Nevada">Nevada</option>
+                    <option value="New Hampshire">New Hampshire</option>
+                    <option value="New Jersey">New Jersey</option>
+                    <option value="New Mexico">New Mexico</option>
+                    <option value="New York">New York</option>
+                    <option value="North Carolina">North Carolina</option>
+                    <option value="North Dakota">North Dakota</option>
+                    <option value="Ohio">Ohio</option>
+                    <option value="Oklahoma">Oklahoma</option>
+                    <option value="Oregon">Oregon</option>
+                    <option value="Pennsylvania">Pennsylvania</option>
+                    <option value="Rhode Island">Rhode Island</option>
+                    <option value="South Carolina">South Carolina</option>
+                    <option value="South Dakota">South Dakota</option>
+                    <option value="Tennessee">Tennessee</option>
+                    <option value="Texas">Texas</option>
+                    <option value="Utah">Utah</option>
+                    <option value="Vermont">Vermont</option>
+                    <option value="Virginia">Virginia</option>
+                    <option value="Washington">Washington</option>
+                    <option value="West Virginia">West Virginia</option>
+                    <option value="Wisconsin">Wisconsin</option>
+                    <option value="Wyoming">Wyoming</option>
+                  </select>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                  <label style={{ fontSize: '12px', color: '#336699' }}>Country</label>
+                  <select value={country} onChange={(e) => setCountry(e.target.value)} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '16px', outline: 'none', backgroundColor: 'transparent' }}>
+                    <option value="United States">United States</option>
+                    <option value="Canada">Canada</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Australia">Australia</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '30px' }}>
+              <button className="btn-secondary" onClick={() => { setIsAddingAccount(false); clearForm(); }} style={{ padding: '8px 20px', borderRadius: '4px', border: '1px solid #ccc', backgroundColor: '#fff', cursor: 'pointer' }}>Cancel</button>
+              <button className="btn-primary" onClick={handleBankingSubmit} style={{ padding: '8px 20px', borderRadius: '4px', border: 'none', backgroundColor: '#007bff', color: '#fff', cursor: 'pointer' }}>Submit</button>
+            </div>
+          </div>
+        ) : currentAccounts.length > 0 ? (
+          <div style={{ padding: '20px 0', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {currentAccounts.map((acc, idx) => (
+              <div key={idx} style={{ position: 'relative', display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: '30px', backgroundColor: '#f8f9fa', padding: '24px', borderRadius: '8px', border: '1px solid #eef2f6' }}>
+
+                {/* Three Dot Action Menu */}
+                <div style={{ position: 'absolute', top: '16px', right: '16px' }}>
+                  <MoreVertical
+                    size={18}
+                    color="#666"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setOpenMenuId(openMenuId === acc._id ? null : acc._id)}
+                  />
+                  {openMenuId === acc._id && (
+                    <div style={{ position: 'absolute', top: '24px', right: '0', backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '4px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', zIndex: 10, width: '120px' }}>
+                      <div
+                        onClick={() => { handleEditAccountClick(acc); setOpenMenuId(null); }}
+                        style={{ padding: '10px 16px', fontSize: '12px', cursor: 'pointer', borderBottom: '1px solid #eee' }}
+                      >Edit Form...</div>
+                      <div
+                        onClick={() => { handleDeleteAccount(acc._id); setOpenMenuId(null); }}
+                        style={{ padding: '10px 16px', fontSize: '12px', cursor: 'pointer', borderBottom: '1px solid #eee', color: '#dc3545' }}
+                      >Delete Profile</div>
+                      <div
+                        onClick={() => { handleMakeDefault(acc._id); setOpenMenuId(null); }}
+                        style={{ padding: '10px 16px', fontSize: '12px', cursor: 'pointer', fontWeight: acc.isDefault ? 'bold' : 'normal', color: acc.isDefault ? '#28a745' : '#333' }}
+                      >{acc.isDefault ? 'Defaulted ✓' : 'Make Default'}</div>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Account Type {acc.isDefault && <span style={{ color: '#28a745', fontWeight: 'bold' }}>(Default)</span>}</div>
+                  <div style={{ fontSize: '15px', fontWeight: '500', color: '#333', marginBottom: '16px' }}>{acc.accountType}</div>
+
+                  <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Name on Account</div>
+                  <div style={{ fontSize: '15px', fontWeight: '500', color: '#333', marginBottom: '16px' }}>{acc.nameOnAccount}</div>
+
+                  <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Account Number</div>
+                  <div style={{ fontSize: '15px', fontWeight: '500', color: '#333', marginBottom: '16px' }}>****{acc.accountNumber?.slice(-4)}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Routing Number</div>
+                  <div style={{ fontSize: '15px', fontWeight: '500', color: '#333', marginBottom: '16px' }}>{acc.routingNumber}</div>
+
+                  <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Bank Name</div>
+                  <div style={{ fontSize: '15px', fontWeight: '500', color: '#333', marginBottom: '16px' }}>{acc.bankName}</div>
+
+                  <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Address</div>
+                  <div style={{ fontSize: '15px', fontWeight: '500', color: '#333', marginBottom: '16px' }}>{acc.address}, {acc.city}, {acc.stateName} {acc.zipCode}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div style={{ padding: 40, textAlign: 'center', color: '#666' }}>
+            <h3>No {activeTab} Added Yet</h3>
+            <p>Click "Add Account" to configure your banking credentials for {activeTab.toLowerCase()}.</p>
+          </div>
         )}
       </div>
-
-      {isAddingAccount ? (
-        <div style={{ padding: '20px 0', textAlign: 'left' }}>
-          <p style={{ fontSize: '12px', color: '#666', marginBottom: '20px' }}>
-            Payment information is protected by <strong>Secure Payments™</strong>. Please fill out the below form and click "Submit".
-          </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                <label style={{ fontSize: '12px', color: '#336699' }}>Account Type</label>
-                <select
-                  value={activeTab}
-                  onChange={(e) => setActiveTab(e.target.value)}
-                  style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '16px', color: '#666', outline: 'none', backgroundColor: 'transparent' }}
-                >
-                  <option value="Checking Account">Checking Account</option>
-                  <option value="Saving Account">Saving Account</option>
-                  <option value="Credit Card">Credit Card</option>
-                </select>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                <label style={{ fontSize: '12px', color: '#336699' }}>Name on account</label>
-                <input type="text" value={nameOnAccount} onChange={(e) => setNameOnAccount(e.target.value)} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '14px', outline: 'none' }} />
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                <label style={{ fontSize: '12px', color: '#336699' }}>Account number</label>
-                <input type="text" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '14px', outline: 'none' }} />
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                <label style={{ fontSize: '12px', color: '#336699' }}>Routing number</label>
-                <input type="text" value={routingNumber} onChange={handleRoutingNumberChange} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '14px', outline: 'none' }} />
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                <label style={{ fontSize: '12px', color: '#336699' }}>Bank name</label>
-                <input type="text" value={bankName} onChange={(e) => setBankName(e.target.value)} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '14px', outline: 'none' }} />
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                <label style={{ fontSize: '12px', color: '#336699' }}>Address</label>
-                <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '14px', outline: 'none' }} />
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                <label style={{ fontSize: '12px', color: '#336699' }}>ZIP Code</label>
-                <input type="text" value={zipCode} onChange={handleZipChange} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '14px', outline: 'none' }} />
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                <label style={{ fontSize: '12px', color: '#336699' }}>City</label>
-                <input type="text" value={city} onChange={(e) => setCity(e.target.value)} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '14px', outline: 'none' }} />
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                <label style={{ fontSize: '12px', color: '#336699' }}>State</label>
-                <select value={stateName} onChange={(e) => setStateName(e.target.value)} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '16px', outline: 'none', backgroundColor: 'transparent' }}>
-                  <option value="Alabama">Alabama</option>
-                  <option value="Alaska">Alaska</option>
-                  <option value="Arizona">Arizona</option>
-                  <option value="Arkansas">Arkansas</option>
-                  <option value="California">California</option>
-                  <option value="Colorado">Colorado</option>
-                  <option value="Connecticut">Connecticut</option>
-                  <option value="Delaware">Delaware</option>
-                  <option value="Florida">Florida</option>
-                  <option value="Georgia">Georgia</option>
-                  <option value="Hawaii">Hawaii</option>
-                  <option value="Idaho">Idaho</option>
-                  <option value="Illinois">Illinois</option>
-                  <option value="Indiana">Indiana</option>
-                  <option value="Iowa">Iowa</option>
-                  <option value="Kansas">Kansas</option>
-                  <option value="Kentucky">Kentucky</option>
-                  <option value="Louisiana">Louisiana</option>
-                  <option value="Maine">Maine</option>
-                  <option value="Maryland">Maryland</option>
-                  <option value="Massachusetts">Massachusetts</option>
-                  <option value="Michigan">Michigan</option>
-                  <option value="Minnesota">Minnesota</option>
-                  <option value="Mississippi">Mississippi</option>
-                  <option value="Missouri">Missouri</option>
-                  <option value="Montana">Montana</option>
-                  <option value="Nebraska">Nebraska</option>
-                  <option value="Nevada">Nevada</option>
-                  <option value="New Hampshire">New Hampshire</option>
-                  <option value="New Jersey">New Jersey</option>
-                  <option value="New Mexico">New Mexico</option>
-                  <option value="New York">New York</option>
-                  <option value="North Carolina">North Carolina</option>
-                  <option value="North Dakota">North Dakota</option>
-                  <option value="Ohio">Ohio</option>
-                  <option value="Oklahoma">Oklahoma</option>
-                  <option value="Oregon">Oregon</option>
-                  <option value="Pennsylvania">Pennsylvania</option>
-                  <option value="Rhode Island">Rhode Island</option>
-                  <option value="South Carolina">South Carolina</option>
-                  <option value="South Dakota">South Dakota</option>
-                  <option value="Tennessee">Tennessee</option>
-                  <option value="Texas">Texas</option>
-                  <option value="Utah">Utah</option>
-                  <option value="Vermont">Vermont</option>
-                  <option value="Virginia">Virginia</option>
-                  <option value="Washington">Washington</option>
-                  <option value="West Virginia">West Virginia</option>
-                  <option value="Wisconsin">Wisconsin</option>
-                  <option value="Wyoming">Wyoming</option>
-                </select>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                <label style={{ fontSize: '12px', color: '#336699' }}>Country</label>
-                <select value={country} onChange={(e) => setCountry(e.target.value)} style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid #ccc', fontSize: '16px', outline: 'none', backgroundColor: 'transparent' }}>
-                  <option value="United States">United States</option>
-                  <option value="Canada">Canada</option>
-                  <option value="United Kingdom">United Kingdom</option>
-                  <option value="Australia">Australia</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '30px' }}>
-            <button className="btn-secondary" onClick={() => { setIsAddingAccount(false); clearForm(); }} style={{ padding: '8px 20px', borderRadius: '4px', border: '1px solid #ccc', backgroundColor: '#fff', cursor: 'pointer' }}>Cancel</button>
-            <button className="btn-primary" onClick={handleBankingSubmit} style={{ padding: '8px 20px', borderRadius: '4px', border: 'none', backgroundColor: '#007bff', color: '#fff', cursor: 'pointer' }}>Submit</button>
-          </div>
-        </div>
-      ) : currentAccounts.length > 0 ? (
-        <div style={{ padding: '20px 0', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {currentAccounts.map((acc, idx) => (
-            <div key={idx} style={{ position: 'relative', display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: '30px', backgroundColor: '#f8f9fa', padding: '24px', borderRadius: '8px', border: '1px solid #eef2f6' }}>
-              
-              {/* Three Dot Action Menu */}
-              <div style={{ position: 'absolute', top: '16px', right: '16px' }}>
-                <MoreVertical 
-                  size={18} 
-                  color="#666" 
-                  style={{ cursor: 'pointer' }} 
-                  onClick={() => setOpenMenuId(openMenuId === acc._id ? null : acc._id)}
-                />
-                {openMenuId === acc._id && (
-                  <div style={{ position: 'absolute', top: '24px', right: '0', backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '4px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', zIndex: 10, width: '120px' }}>
-                    <div 
-                      onClick={() => { handleEditAccountClick(acc); setOpenMenuId(null); }}
-                      style={{ padding: '10px 16px', fontSize: '12px', cursor: 'pointer', borderBottom: '1px solid #eee' }}
-                    >Edit Form...</div>
-                    <div 
-                      onClick={() => { handleDeleteAccount(acc._id); setOpenMenuId(null); }}
-                      style={{ padding: '10px 16px', fontSize: '12px', cursor: 'pointer', borderBottom: '1px solid #eee', color: '#dc3545' }}
-                    >Delete Profile</div>
-                    <div 
-                      onClick={() => { handleMakeDefault(acc._id); setOpenMenuId(null); }}
-                      style={{ padding: '10px 16px', fontSize: '12px', cursor: 'pointer', fontWeight: acc.isDefault ? 'bold' : 'normal', color: acc.isDefault ? '#28a745' : '#333' }}
-                    >{acc.isDefault ? 'Defaulted ✓' : 'Make Default'}</div>
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Account Type {acc.isDefault && <span style={{ color: '#28a745', fontWeight: 'bold' }}>(Default)</span>}</div>
-                <div style={{ fontSize: '15px', fontWeight: '500', color: '#333', marginBottom: '16px' }}>{acc.accountType}</div>
-                
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Name on Account</div>
-                <div style={{ fontSize: '15px', fontWeight: '500', color: '#333', marginBottom: '16px' }}>{acc.nameOnAccount}</div>
-                
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Account Number</div>
-                <div style={{ fontSize: '15px', fontWeight: '500', color: '#333', marginBottom: '16px' }}>****{acc.accountNumber?.slice(-4)}</div>
-              </div>
-              <div>
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Routing Number</div>
-                <div style={{ fontSize: '15px', fontWeight: '500', color: '#333', marginBottom: '16px' }}>{acc.routingNumber}</div>
-                
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Bank Name</div>
-                <div style={{ fontSize: '15px', fontWeight: '500', color: '#333', marginBottom: '16px' }}>{acc.bankName}</div>
-                
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Address</div>
-                <div style={{ fontSize: '15px', fontWeight: '500', color: '#333', marginBottom: '16px' }}>{acc.address}, {acc.city}, {acc.stateName} {acc.zipCode}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div style={{ padding: 40, textAlign: 'center', color: '#666' }}>
-          <h3>No {activeTab} Added Yet</h3>
-          <p>Click "Add Account" to configure your banking credentials for {activeTab.toLowerCase()}.</p>
-        </div>
-      )}
     </div>
-  </div>
   );
 };
 
@@ -1553,7 +1555,7 @@ function ParticularLoanPage() {
         const response = await fetch(getApiUrl(`/api/loans/${id}`), {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         });
-        
+
         const contentType = response.headers.get("content-type");
         if (!response.ok || !contentType || !contentType.includes("application/json")) {
           const text = await response.text();
@@ -1589,15 +1591,15 @@ function ParticularLoanPage() {
     const { name, value, type, checked } = e.target;
     const isAmount = name === 'Request_Loan_Amount';
     const isState = name === 'Primary_Address_State';
-    
+
     setSetupDetails(prev => {
       const updates = { ...prev, [name]: type === 'checkbox' ? checked : value };
-      
+
       const targetState = isState ? value : prev.Primary_Address_State;
       const targetAmount = isAmount ? Number(value) : Number(prev.Request_Loan_Amount);
-      
+
       const stateConfig = availableStates.find(s => s.name === targetState);
-      
+
       if (stateConfig) {
         if (isState) {
           updates.interestRate = stateConfig.interestRate || 12;
@@ -1607,7 +1609,7 @@ function ParticularLoanPage() {
           updates.underwritingRefinanceFee = (targetAmount * feePercent) / 100;
         }
       }
-      
+
       return updates;
     });
   };
@@ -1768,7 +1770,7 @@ function ParticularLoanPage() {
       let updatedBankingArray;
 
       if (editingBankId) {
-        updatedBankingArray = existingAccounts.map(acc => 
+        updatedBankingArray = existingAccounts.map(acc =>
           acc._id === editingBankId ? {
             ...acc,
             accountType: activeTab,
@@ -1894,14 +1896,14 @@ function ParticularLoanPage() {
         }}>
           <Activity size={18} />
           <span>{error}</span>
-          <button 
-            onClick={() => window.location.reload()} 
-            style={{ 
-              marginLeft: 'auto', 
-              background: 'none', 
-              border: 'none', 
-              color: '#c62828', 
-              cursor: 'pointer', 
+          <button
+            onClick={() => window.location.reload()}
+            style={{
+              marginLeft: 'auto',
+              background: 'none',
+              border: 'none',
+              color: '#c62828',
+              cursor: 'pointer',
               textDecoration: 'underline',
               fontSize: '13px'
             }}

@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import "./LoanForm.css";
@@ -84,13 +86,13 @@ const LoanForm = ({ isOpen, onClose, onLoanAdded }) => {
     } else {
       setShowOther(prev => ({ ...prev, [type]: false }));
       setFormData(prev => ({ ...prev, [field]: value }));
-      
+
       // Auto-populate logic for Primary Address State
       if (type === 'primary') {
         const stateConfig = availableStates.find(s => s.name === value);
         if (stateConfig) {
           setSelectedStateConfig(stateConfig);
-          
+
           const amount = Number(formData.Request_Loan_Amount) || 0;
           const feePercent = stateConfig.originationFees || 0;
           const calculatedFee = (amount * feePercent) / 100;
@@ -239,7 +241,7 @@ const LoanForm = ({ isOpen, onClose, onLoanAdded }) => {
         <div className="modal-body-gradient">
           <div className="application-card">
             <h2 className="form-main-title">LOAN APPLICATION</h2>
-            
+
             {amountError && (
               <div style={{ backgroundColor: '#fff5f5', color: '#e53e3e', padding: '12px', borderRadius: '4px', marginBottom: '16px', fontSize: '13px', fontWeight: '500', border: '1px solid #feb2b2' }}>
                 ⚠️ {amountError}
@@ -550,9 +552,9 @@ const LoanForm = ({ isOpen, onClose, onLoanAdded }) => {
                   placeholder="Inherited from State"
                 />
                 {formData.Request_Loan_Amount > 0 && formData.interestRate > 0 && (
-                   <span style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>
-                     Est. Interest: ${(Number(formData.Request_Loan_Amount) * Number(formData.interestRate) / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                   </span>
+                  <span style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>
+                    Est. Interest: ${(Number(formData.Request_Loan_Amount) * Number(formData.interestRate) / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                  </span>
                 )}
               </div>
               <div className="input-group">
@@ -564,9 +566,9 @@ const LoanForm = ({ isOpen, onClose, onLoanAdded }) => {
                   placeholder="Calculated from State Fee %"
                 />
                 {selectedStateConfig && (
-                   <span style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>
-                     (Calculated at {selectedStateConfig.originationFees}% of Amount)
-                   </span>
+                  <span style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>
+                    (Calculated at {selectedStateConfig.originationFees}% of Amount)
+                  </span>
                 )}
               </div>
               <div className="input-group">

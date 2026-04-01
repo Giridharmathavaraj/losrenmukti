@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import Nav from '../Nav';
 import { getApiUrl } from '../../apiConfig';
@@ -148,8 +150,8 @@ const Users = () => {
                                                                 <option key={c._id} value={c._id}>{c.name}</option>
                                                             ))}
                                                         </select>
-                                    ) : (
-                                        <span style={{ color: '#333', fontSize: '14px' }}>{user.companyId?.name || 'N/A'}</span>
+                                                    ) : (
+                                                        <span style={{ color: '#333', fontSize: '14px' }}>{user.companyId?.name || 'N/A'}</span>
                                                     )}
                                                 </td>
                                                 <td style={{ padding: '16px 20px' }}>

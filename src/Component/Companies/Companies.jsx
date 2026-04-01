@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import Nav from '../Nav';
 import { getApiUrl } from '../../apiConfig';
@@ -55,7 +57,7 @@ const Companies = () => {
 
     const handleSaveClick = async (companyId) => {
         try {
-            const response = await fetch(`/api/companies/${companyId}`, {
+            const response = await fetch(getApiUrl(`/api/companies/${companyId}`), {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export', // Required for Zoho Catalyst Slate static serving
+  output: 'export',
   images: {
-    unoptimized: true // Required for static export
-  }
+    unoptimized: true
+  },
+  // Turbopack is the default in Next.js 15 dev mode
+  // useRouter error was fixed by adding 'use client' directives
 };
 
 export default nextConfig;

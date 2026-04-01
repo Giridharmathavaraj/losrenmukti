@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import { getApiUrl } from '../../apiConfig';
 import Nav from '../Nav';
@@ -16,7 +18,7 @@ const StateSettings = () => {
   const [newMinLoanAmount, setNewMinLoanAmount] = useState('');
   const [newMaxLoanAmount, setNewMaxLoanAmount] = useState('');
   const [editingId, setEditingId] = useState(null);
-  
+
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -65,7 +67,7 @@ const StateSettings = () => {
     e.preventDefault();
     setError('');
     setSuccess('');
-    
+
     if (!newName.trim() || !newCode.trim()) {
       setError('Both Name and Code are required');
       return;
@@ -81,8 +83,8 @@ const StateSettings = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify({ 
-          name: newName, 
+        body: JSON.stringify({
+          name: newName,
           code: newCode,
           interestRate: newInterestRate,
           originationFees: newOriginationFees,
@@ -92,7 +94,7 @@ const StateSettings = () => {
         })
       });
       const data = await res.json();
-      
+
       if (res.ok) {
         setSuccess(editingId ? 'State updated successfully' : 'State added successfully');
         resetForm();
@@ -140,9 +142,9 @@ const StateSettings = () => {
     try {
       const res = await fetch(getApiUrl(`/api/states/${id}/status`), {
         method: 'PUT',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` 
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({ status: newStatus })
       });
@@ -164,11 +166,11 @@ const StateSettings = () => {
       setError('No data to export');
       return;
     }
-    
+
     const headers = ['Name', 'Code', 'Interest Rate', 'Origination Fees', 'Min Loan', 'Max Loan', 'Status'];
     const rows = states.map(s => `"${s.name}","${s.code}","${s.interestRate || 0}","${s.originationFees || 0}","${s.minLoanAmount || 0}","${s.maxLoanAmount || 0}","${s.status || 'Pending'}"`);
     const csvContent = [headers.join(','), ...rows].join('\n');
-    
+
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -185,7 +187,7 @@ const StateSettings = () => {
     reader.onload = async (event) => {
       const csvData = event.target.result;
       const lines = csvData.split(/\r?\n/);
-      
+
       const parsedStates = [];
       // Robust CSV row parser using regex to handle quotes and commas correctly
       const parseCsvRow = (text) => {
@@ -201,7 +203,7 @@ const StateSettings = () => {
       };
 
       const startIndex = (lines[0] && lines[0].toLowerCase().includes('name')) ? 1 : 0;
-      
+
       for (let i = startIndex; i < lines.length; i++) {
         const row = parseCsvRow(lines[i]);
         if (row.length >= 2) {
@@ -235,7 +237,7 @@ const StateSettings = () => {
           body: JSON.stringify({ states: parsedStates })
         });
         const data = await res.json();
-        
+
         if (res.ok) {
           setSuccess(`Successfully imported ${data.importedCount} new states`);
           fetchStates();
@@ -262,24 +264,24 @@ const StateSettings = () => {
             <p>Manage operating states and location codes for the application</p>
           </div>
           <div className="header-actions">
-             <input 
-               type="file" 
-               accept=".csv" 
-               style={{ display: 'none' }} 
-               ref={fileInputRef}
-               onChange={handleFileUpload}
-             />
-             <button className="btn-secondary" onClick={() => fileInputRef.current?.click()} disabled={loading}>
-               <Upload size={16} /> Import CSV
-             </button>
-             <button className="btn-secondary" onClick={handleExportCSV} disabled={states.length === 0 || loading}>
-               <Download size={16} /> Export CSV
-             </button>
+            <input
+              type="file"
+              accept=".csv"
+              style={{ display: 'none' }}
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+            />
+            <button className="btn-secondary" onClick={() => fileInputRef.current?.click()} disabled={loading}>
+              <Upload size={16} /> Import CSV
+            </button>
+            <button className="btn-secondary" onClick={handleExportCSV} disabled={states.length === 0 || loading}>
+              <Download size={16} /> Export CSV
+            </button>
           </div>
         </div>
 
-        {error && <div className="alert-error"><AlertCircle size={16}/> {error}</div>}
-        {success && <div className="alert-success"><CheckCircle size={16}/> {success}</div>}
+        {error && <div className="alert-error"><AlertCircle size={16} /> {error}</div>}
+        {success && <div className="alert-success"><CheckCircle size={16} /> {success}</div>}
 
         <div className="content-grid">
           {/* Add/Edit State Form */}
@@ -288,42 +290,42 @@ const StateSettings = () => {
             <form onSubmit={handleAddState} className="add-state-form">
               <div className="form-group">
                 <label>State Name</label>
-                <input 
-                  type="text" 
-                  value={newName} 
-                  onChange={(e) => setNewName(e.target.value)} 
+                <input
+                  type="text"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
                   placeholder="e.g., California"
-                  required 
+                  required
                 />
               </div>
               <div className="form-group">
                 <label>State Code</label>
-                <input 
-                  type="text" 
-                  value={newCode} 
-                  onChange={(e) => setNewCode(e.target.value)} 
+                <input
+                  type="text"
+                  value={newCode}
+                  onChange={(e) => setNewCode(e.target.value)}
                   placeholder="e.g., CA"
                   maxLength="5"
-                  required 
+                  required
                 />
               </div>
               <div className="form-group">
                 <label>Interest Rate (%)</label>
-                <input 
-                  type="number" 
+                <input
+                  type="number"
                   step="0.01"
-                  value={newInterestRate} 
-                  onChange={(e) => setNewInterestRate(e.target.value)} 
+                  value={newInterestRate}
+                  onChange={(e) => setNewInterestRate(e.target.value)}
                   placeholder="e.g., 5.5"
                 />
               </div>
               <div className="form-group">
                 <label>Origination Fees (%)</label>
-                <input 
-                  type="number" 
+                <input
+                  type="number"
                   step="0.01"
-                  value={newOriginationFees} 
-                  onChange={(e) => setNewOriginationFees(e.target.value)} 
+                  value={newOriginationFees}
+                  onChange={(e) => setNewOriginationFees(e.target.value)}
                   placeholder="e.g., 2.0"
                 />
               </div>
@@ -331,10 +333,10 @@ const StateSettings = () => {
                 <label>Min Loan Amount</label>
                 <div className="input-with-icon" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                   <span style={{ position: 'absolute', left: '10px', color: '#94a3b8' }}>$</span>
-                  <input 
-                    type="number" 
-                    value={newMinLoanAmount} 
-                    onChange={(e) => setNewMinLoanAmount(e.target.value)} 
+                  <input
+                    type="number"
+                    value={newMinLoanAmount}
+                    onChange={(e) => setNewMinLoanAmount(e.target.value)}
                     placeholder="e.g., 1000"
                     style={{ paddingLeft: '30px' }}
                   />
@@ -344,10 +346,10 @@ const StateSettings = () => {
                 <label>Max Loan Amount</label>
                 <div className="input-with-icon" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                   <span style={{ position: 'absolute', left: '10px', color: '#94a3b8' }}>$</span>
-                  <input 
-                    type="number" 
-                    value={newMaxLoanAmount} 
-                    onChange={(e) => setNewMaxLoanAmount(e.target.value)} 
+                  <input
+                    type="number"
+                    value={newMaxLoanAmount}
+                    onChange={(e) => setNewMaxLoanAmount(e.target.value)}
                     placeholder="e.g., 50000"
                     style={{ paddingLeft: '30px' }}
                   />
@@ -408,13 +410,13 @@ const StateSettings = () => {
                               <Edit size={16} />
                             </button>
                             {state.status === 'Approved' ? (
-                               <button className="btn-icon revert" onClick={() => handleUpdateStatus(state._id, 'Pending')} title="Revert to Pending">
-                                 <AlertCircle size={16} />
-                               </button>
+                              <button className="btn-icon revert" onClick={() => handleUpdateStatus(state._id, 'Pending')} title="Revert to Pending">
+                                <AlertCircle size={16} />
+                              </button>
                             ) : (
-                               <button className="btn-icon approve" onClick={() => handleUpdateStatus(state._id, 'Approved')} title="Approve State">
-                                 <CheckCircle size={16} />
-                               </button>
+                              <button className="btn-icon approve" onClick={() => handleUpdateStatus(state._id, 'Approved')} title="Approve State">
+                                <CheckCircle size={16} />
+                              </button>
                             )}
                             <button className="btn-icon delete" onClick={() => handleDelete(state._id)} title="Delete State">
                               <Trash2 size={16} />

@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useNavigate } from '@/Component/router-hooks';
 import { useForm } from 'react-hook-form';
