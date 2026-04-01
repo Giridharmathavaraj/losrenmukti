@@ -34,6 +34,7 @@ const LoginPage = ({ onLogin }) => {
             const data = await response.json();
 
             if (response.ok) {
+                console.log('Login successful for user:', data.username);
                 // Save token and user info to localStorage
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('username', data.username);
@@ -44,9 +45,11 @@ const LoginPage = ({ onLogin }) => {
                 // Redirect to dashboard
                 navigate('/');
             } else {
+                console.log('Login failed error:', data.error);
                 setApiError(data.error || 'Login failed. Please try again.');
             }
         } catch (err) {
+            console.log('Network or Server error:', err.message);
             setApiError('An error occurred. Please check your connection to the server.');
             console.error('Login error:', err);
         } finally {
