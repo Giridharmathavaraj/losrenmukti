@@ -17,8 +17,11 @@ export const getApiUrl = (endpoint) => {
     if (isPrivate) {
       return `https://${hostname}:5000${cleanEndpoint}`;
     }
+    
+    // For production (Slate/Catalyst remote domains), use the same origin!
+    return cleanEndpoint;
   }
 
-  // Fallback – assume localhost
+  // Fallback for SSR or non-browser environments where window is not defined
   return `https://localhost:5000${cleanEndpoint}`;
 };
