@@ -15,10 +15,10 @@ export const getApiUrl = (endpoint) => {
       /^10\./.test(hostname) ||
       /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(hostname);
     if (isPrivate) {
-      return `http://${hostname}:5000${cleanEndpoint}`;
+      return `https://${hostname}:5000${cleanEndpoint}`;
     }
   }
 
   // Fallback – assume localhost
-  return `http://localhost:5000${cleanEndpoint}`;
+  return `https://localhost:5000${cleanEndpoint}`;
 };

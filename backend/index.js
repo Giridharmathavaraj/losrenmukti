@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import catalyst from 'zcatalyst-sdk-node';
 import fs from 'fs';
+import https from 'https';
 import multer from 'multer';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -791,7 +792,18 @@ app.use((req, res, next) => {
 
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => console.log(`🚀 Server running locally on port ${PORT}`));
+  try {
+    const options = {
+      key: fs.readFileSync(path.join(__dirname, 'certs', 'localhost-key.pem')),
+      cert: fs.readFileSync(path.join(__dirname, 'certs', 'localhost-cert.pem'))
+    };
+    https.createServer(options, app).listen(PORT, () => {
+      console.log(`🚀 HTTPS Server running locally on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error('❌ Failed to start HTTPS Server:', err.message);
+    app.listen(PORT, () => console.log(`🚀 HTTP Server running locally on port ${PORT}`));
+  }
 }
 
 export default app;
