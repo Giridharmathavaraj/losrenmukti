@@ -3,8 +3,9 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
-  // Turbopack is the default in Next.js 15 dev mode
-  // useRouter error was fixed by adding 'use client' directives
+  // Disable compression — Zoho Slate's reverse proxy conflicts with
+  // Next.js built-in gzip, causing ERR_CONTENT_DECODING_FAILED on POST requests
+  compress: false,
 };
 
 export default nextConfig;
