@@ -9,7 +9,6 @@ export async function PUT(request, { params }) {
 
   try {
     await connectToDatabase();
-    // Assuming context.params are synchronously available in typical usage, but technically in Next 15 they are promises, we will await them to be safe
     const { id } = await params;
     
     const isMainAdmin = authUser.username === 'owner';
