@@ -1,0 +1,57 @@
+import { connectToDatabase } from '@/lib/mongoose';
+import State from '@/lib/models/State';
+import { authenticateToken } from '@/lib/auth';
+import { NextResponse } from 'next/server';
+
+export async function PUT(request, { params }) {
+  const authUser = authenticateToken(request);
+  if (!authUser) return NextResponse.json({ error: 'Access denied.' }, { status: 401 });
+
+  try {
+    await connectToDatabase();
+    const { id } = await params;
+    const { name, code, interestRate, originationFees, minLoanAmount, maxLoanAmount, status } = await request.json();
+    let query = { _id: id };
+    
+    if (authUser.companyId && authUser.role !== 'superadmin') {
+      query.companyId = authUser.companyId;
+    }
+
+    const updatedState = await State.findOneAndUpdate(query, {
+      name,
+      code: code?.toUpperCase(),
+      interestRate,
+      originationFees,
+      minLoanAmount,
+      maxLoanAmount,
+      status
+    }, { new: true });
+
+    if (!updatedState) return NextResponse.json({ error: 'State not found or unauthorized' }, { status: 404 });
+    return NextResponse.json(updatedState);
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(request, { params }) {
+  const authUser = authenticateToken(request);
+  if (!authUser) return NextResponse.json({ error: 'Access denied.' }, { status: 401 });
+
+  try {
+    await connectToDatabase();
+    const { id } = await params;
+    let query = { _id: id };
+    
+    if (authUser.companyId && authUser.role !== 'superadmin') {
+      query.companyId = authUser.companyId;
+    }
+
+    const deletedState = await State.findOneAndDelete(query);
+    if (!deletedState) return NextResponse.json({ error: 'State not found or unauthorized' }, { status: 404 });
+
+    return NextResponse.json({ message: 'State deleted' });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}

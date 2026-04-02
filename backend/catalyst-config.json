@@ -1,6 +1,0 @@
-{
-  "stack": "node20",
-  "execution": {
-    "main": "index.js"
-  }
-}
