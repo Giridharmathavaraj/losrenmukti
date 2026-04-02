@@ -97,13 +97,8 @@ const StateSettings = () => {
 
       if (res.ok) {
         setSuccess(editingId ? 'State updated successfully' : 'State added successfully');
-        // Optimistic update: update local state instantly without re-fetching
-        if (editingId) {
-          setStates(prev => prev.map(s => s._id === editingId ? data : s));
-        } else {
-          setStates(prev => [...prev, data]);
-        }
         resetForm();
+        fetchStates();
       } else {
         setError(data.error || 'Failed to process state');
       }
@@ -125,10 +120,6 @@ const StateSettings = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this state?')) return;
-    // Optimistic update: remove from UI immediately
-    const previousStates = states;
-    setStates(prev => prev.filter(s => s._id !== id));
-    if (editingId === id) resetForm();
     try {
       const res = await fetch(getApiUrl(`/api/states/${id}`), {
         method: 'DELETE',
@@ -136,23 +127,18 @@ const StateSettings = () => {
       });
       if (res.ok) {
         setSuccess('State deleted');
+        if (editingId === id) resetForm();
+        fetchStates();
       } else {
-        // Revert on failure
-        setStates(previousStates);
         const data = await res.json();
         setError(data.error || 'Failed to delete state');
       }
     } catch (err) {
-      setStates(previousStates);
       setError('Connection error while deleting');
     }
   };
 
   const handleUpdateStatus = async (id, newStatus) => {
-    // Optimistic update: flip status in UI immediately
-    const previousStates = states;
-    setStates(prev => prev.map(s => s._id === id ? { ...s, status: newStatus } : s));
-    setSuccess(`State status updated to ${newStatus}`);
     try {
       const res = await fetch(getApiUrl(`/api/states/${id}/status`), {
         method: 'PUT',
@@ -162,16 +148,14 @@ const StateSettings = () => {
         },
         body: JSON.stringify({ status: newStatus })
       });
-      if (!res.ok) {
-        // Revert on failure
-        setStates(previousStates);
+      if (res.ok) {
+        setSuccess(`State status updated to ${newStatus}`);
+        fetchStates();
+      } else {
         const data = await res.json();
-        setSuccess('');
         setError(data.error || 'Failed to update state status');
       }
     } catch (err) {
-      setStates(previousStates);
-      setSuccess('');
       setError('Connection error');
     }
   };
