@@ -42,6 +42,9 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error('Error during login:', error);
-    return NextResponse.json({ error: 'Internal server error during login' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Internal server error during login',
+      detail: error.message 
+    }, { status: 500 });
   }
 }

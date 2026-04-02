@@ -1154,6 +1154,11 @@ const TransactionsView = ({
                           <button
                             className="btn-primary"
                             onClick={async () => {
+                              const previousSchedule = schedule;
+                              const previousLoanData = loanData;
+                              const previousCompletedPayments = completedPayments;
+                              const previousCustomPaymentDates = customPaymentDates;
+
                               let updatedCompletedPayments = { ...completedPayments };
                               if (tempDate) {
                                 updatedCompletedPayments[row.period] = tempDate;
@@ -1184,6 +1189,9 @@ const TransactionsView = ({
                                 };
                               });
 
+                              // Optimistic update: refresh local schedule view
+                              setLoanData(prev => ({ ...prev, transactions: updatedSchedule, completedPayments: updatedCompletedPayments }));
+
                               try {
                                 const response = await fetch(getApiUrl(`/api/loans/${loanData._id}`), {
                                   method: 'PUT',
@@ -1206,6 +1214,10 @@ const TransactionsView = ({
                                     alert("Transaction Saved Successfully!");
                                   }
                                 } else {
+                                  // Revert on failure
+                                  setLoanData(previousLoanData);
+                                  setCompletedPayments(previousCompletedPayments);
+                                  setCustomPaymentDates(previousCustomPaymentDates);
                                   if (response.status === 403 || response.status === 401) {
                                     alert("Security Session Expired: Please Log Out and Log Back In to save transactions.");
                                   } else {
@@ -1214,6 +1226,10 @@ const TransactionsView = ({
                                 }
                               } catch (err) {
                                 console.error("Error saving completed payment:", err);
+                                setLoanData(previousLoanData);
+                                setCompletedPayments(previousCompletedPayments);
+                                setCustomPaymentDates(previousCustomPaymentDates);
+                                alert("Connection error while saving transaction");
                               }
                             }}
                             style={{ padding: '4px 8px', fontSize: '11px', backgroundColor: '#28a745', border: 'none' }}
@@ -1615,6 +1631,19 @@ function ParticularLoanPage() {
   };
 
   const handleSaveSetup = async () => {
+    // Optimistic update: assume success
+    const previousLoanData = loanData;
+    setIsEditingSetup(false);
+    
+    // We update local state so the calculations refresh instantly
+    // Transactions being cleared forces a recount which happens in the list renderer
+    setLoanData(prev => ({
+      ...prev,
+      ...setupDetails,
+      transactions: [],
+      completedPayments: {}
+    }));
+
     try {
       const response = await fetch(getApiUrl(`/api/loans/${loanData._id}`), {
         method: 'PUT',
@@ -1631,18 +1660,21 @@ function ParticularLoanPage() {
       if (response.ok) {
         const updatedLoan = await response.json();
         setLoanData(updatedLoan);
-        setIsEditingSetup(false);
         if (updatedLoan.mailSent) {
           alert("Mail Sent Successfully! Logged in Database bounds.");
         } else {
-          alert('Loan Setup Details Saved Successfully!');
+          // No alert needed for success to keep it smooth
         }
       } else {
+        setLoanData(previousLoanData);
+        setIsEditingSetup(true);
         alert('Failed to save details');
       }
     } catch (err) {
       console.error(err);
-      alert('Error saving details');
+      setLoanData(previousLoanData);
+      setIsEditingSetup(true);
+      alert('Error saving details. Check connection.');
     }
   };
 
@@ -1708,33 +1740,57 @@ function ParticularLoanPage() {
   const [editingBankId, setEditingBankId] = React.useState(null);
 
   const handleMakeDefault = async (accountId) => {
+    // Optimistic update: assume success
+    const previousLoanData = loanData;
+    const existingAccounts = Array.isArray(loanData?.bankingDetails) ? loanData.bankingDetails : loanData?.bankingDetails ? [loanData.bankingDetails] : [];
+    const updatedAccounts = existingAccounts.map(acc => ({
+      ...acc,
+      isDefault: acc._id === accountId
+    }));
+    setLoanData(prev => ({ ...prev, bankingDetails: updatedAccounts }));
+
     try {
-      const existingAccounts = Array.isArray(loanData?.bankingDetails) ? loanData.bankingDetails : loanData?.bankingDetails ? [loanData.bankingDetails] : [];
-      const updatedAccounts = existingAccounts.map(acc => ({
-        ...acc,
-        isDefault: acc._id === accountId
-      }));
       const response = await fetch(getApiUrl(`/api/loans/${loanData._id}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
         body: JSON.stringify({ bankingDetails: updatedAccounts })
       });
-      if (response.ok) setLoanData(await response.json());
-    } catch (err) { console.error(err); }
+      if (response.ok) {
+        setLoanData(await response.json());
+      } else {
+        setLoanData(previousLoanData);
+        alert("Failed to update default account");
+      }
+    } catch (err) { 
+      console.error(err);
+      setLoanData(previousLoanData);
+    }
   };
 
   const handleDeleteAccount = async (accountId) => {
     if (!window.confirm("Are you sure you want to delete this account?")) return;
+    // Optimistic update: assume success
+    const previousLoanData = loanData;
+    const existingAccounts = Array.isArray(loanData?.bankingDetails) ? loanData.bankingDetails : loanData?.bankingDetails ? [loanData.bankingDetails] : [];
+    const updatedAccounts = existingAccounts.filter(acc => acc._id !== accountId);
+    setLoanData(prev => ({ ...prev, bankingDetails: updatedAccounts }));
+
     try {
-      const existingAccounts = Array.isArray(loanData?.bankingDetails) ? loanData.bankingDetails : loanData?.bankingDetails ? [loanData.bankingDetails] : [];
-      const updatedAccounts = existingAccounts.filter(acc => acc._id !== accountId);
       const response = await fetch(getApiUrl(`/api/loans/${loanData._id}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
         body: JSON.stringify({ bankingDetails: updatedAccounts })
       });
-      if (response.ok) setLoanData(await response.json());
-    } catch (err) { console.error(err); }
+      if (response.ok) {
+        setLoanData(await response.json());
+      } else {
+        setLoanData(previousLoanData);
+        alert("Failed to delete account");
+      }
+    } catch (err) { 
+      console.error(err);
+      setLoanData(previousLoanData);
+    }
   };
 
   const handleEditAccountClick = (acc) => {
@@ -1765,70 +1821,69 @@ function ParticularLoanPage() {
   };
 
   const handleBankingSubmit = async () => {
+    // Optimistic update
+    const previousLoanData = loanData;
+    const existingAccounts = Array.isArray(loanData?.bankingDetails) ? loanData.bankingDetails : loanData?.bankingDetails ? [loanData.bankingDetails] : [];
+    let updatedBankingArray;
+
+    const newAccountData = {
+      accountType: activeTab,
+      nameOnAccount,
+      accountNumber,
+      routingNumber,
+      bankName,
+      address,
+      zipCode,
+      city,
+      stateName,
+      country,
+      _id: editingBankId || `temp-${Date.now()}` // Temporary ID for list rendering
+    };
+
+    if (editingBankId) {
+      updatedBankingArray = existingAccounts.map(acc =>
+        acc._id === editingBankId ? { ...acc, ...newAccountData } : acc
+      );
+    } else {
+      updatedBankingArray = [
+        ...existingAccounts,
+        { ...newAccountData, isDefault: existingAccounts.length === 0 }
+      ];
+    }
+
+    // Update UI instantly
+    setLoanData(prev => ({ ...prev, bankingDetails: updatedBankingArray }));
+    setIsAddingAccount(false);
+    clearForm();
+
     try {
-      const existingAccounts = Array.isArray(loanData?.bankingDetails) ? loanData.bankingDetails : loanData?.bankingDetails ? [loanData.bankingDetails] : [];
-      let updatedBankingArray;
-
-      if (editingBankId) {
-        updatedBankingArray = existingAccounts.map(acc =>
-          acc._id === editingBankId ? {
-            ...acc,
-            accountType: activeTab,
-            nameOnAccount,
-            accountNumber,
-            routingNumber,
-            bankName,
-            address,
-            zipCode,
-            city,
-            stateName,
-            country
-          } : acc
-        );
-      } else {
-        updatedBankingArray = [
-          ...existingAccounts,
-          {
-            accountType: activeTab,
-            nameOnAccount,
-            accountNumber,
-            routingNumber,
-            bankName,
-            address,
-            zipCode,
-            city,
-            stateName,
-            country,
-            isDefault: existingAccounts.length === 0
-          }
-        ];
-      }
-
       const response = await fetch(getApiUrl(`/api/loans/${loanData._id}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify({ bankingDetails: updatedBankingArray })
+        body: JSON.stringify({ bankingDetails: updatedBankingArray.map(acc => {
+          const { ...rest } = acc;
+          if (typeof rest._id === 'string' && rest._id.startsWith('temp-')) delete rest._id;
+          return rest;
+        })})
       });
 
       if (response.ok) {
         const updatedLoan = await response.json();
         setLoanData(updatedLoan);
-        if (updatedLoan.mailSent) {
-          alert("Mail Sent Successfully! Logged in Database bounds.");
-        } else {
-          alert('Banking Details Saved Successfully!');
-        }
-        setIsAddingAccount(false);
-        clearForm();
       } else {
+        // Revert UI on failure
+        setLoanData(previousLoanData);
+        setIsAddingAccount(true);
         alert('Failed to save banking details');
       }
     } catch (err) {
       console.error(err);
-      alert('Error saving banking details');
+      setLoanData(previousLoanData);
+      setIsAddingAccount(true);
+      alert('Error saving banking details. Check connection.');
     }
   };
 

@@ -3,38 +3,29 @@ import mongoose from 'mongoose';
 const DEFAULT_ATLAS_URI = 'mongodb+srv://giridharmathavaraj_db_user:JlqWzElUK6bDDVUt@cluster0.kjqzoqe.mongodb.net/loanpro_db?retryWrites=true&w=majority';
 const MONGODB_URI = process.env.MONGODB_URI || DEFAULT_ATLAS_URI;
 
-/**
- * Global is used here to maintain a cached connection across hot reloads
- * in development. This prevents connections growing exponentially
- * during API Route usage.
- */
-let cached = global.mongoose;
-
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
+// Module-level cache — works reliably in both serverless and dev environments
+let cachedConn = null;
+let cachedPromise = null;
 
 export async function connectToDatabase() {
-  if (cached.conn) {
-    return cached.conn;
+  if (cachedConn && mongoose.connection.readyState === 1) {
+    return cachedConn;
   }
 
-  if (!cached.promise) {
-    const opts = {
+  if (!cachedPromise) {
+    cachedPromise = mongoose.connect(MONGODB_URI, {
       bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
     });
   }
-  
+
   try {
-    cached.conn = await cached.promise;
+    cachedConn = await cachedPromise;
   } catch (e) {
-    cached.promise = null;
+    cachedPromise = null;
     throw e;
   }
 
-  return cached.conn;
+  return cachedConn;
 }
